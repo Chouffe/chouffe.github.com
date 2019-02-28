@@ -29,12 +29,12 @@ Mxnet is the Deep Learning Framework developped jointly by Amazon and Microsoft.
 
 ## Mxnet and Clojure
 
-Long story short: by leveraging Scala, Clojure can talk to the Mxnet bindings. And this is amazing! Here is the [Clojure Package](https://github.com/apache/incubator-mxnet/tree/master/contrib/clojure-package) in the Mxnet Repo.
+Long story short: by leveraging Scala, Clojure can talk to the Mxnet bindings. And this is amazing! Here is the [Clojure Package](https://github.com/apache/incubator-mxnet/tree/master/contrib/clojure-package) in the Mxnet repository.
 
 ## AWS Deep Learning AMI
 
-AWS provides AMIs tailored to Deep Learning framework. They are pre-configured environments to quickly build deep learning applications.
-The AMI we will cover in this post is the **AWS Deep Learning AMI (base) image**. [Find it here](https://aws.amazon.com/machine-learning/amis/).
+AWS provides AMIs tailored to Deep Learning frameworks. They are pre-configured environments to quickly build deep learning applications.
+The AMI we will cover in this post is the **AWS Deep Learning AMI (base) image** - [Find it here](https://aws.amazon.com/machine-learning/amis/).
 
 ## Installation steps
 
@@ -73,7 +73,7 @@ sudo update-alternatives --config java
 
 #### Update Cuda version
 
-From the EC2 instance, run the following commands to use the proper Cuda version required to run Mxnet. For `Mxnet 1.4.0`, one needs `Cuda 9.2`
+From the EC2 instance, run the following commands to use the proper Cuda version required to run Mxnet. For `Mxnet 1.4.0`, one needs `cuda-9.2`
 
 ```
 sudo rm /usr/local/cuda
@@ -84,7 +84,7 @@ sudo ln -s /usr/local/cuda-9.2 /usr/local/cuda
 
 Run the following commands to install the latest `leiningen`
 
-```sh
+```
 wget https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
 chmod a+x lein
 mv lein /usr/bin
@@ -130,7 +130,7 @@ watch nvidia-sim
 
 ![nvidia-sim output](/assets/images/aws-dl-ami/aws-ec2-ami-nvidia-sim.png)
 
-Now it is time to run some Clojure Code and get these Neural Networks to learn something!
+Now it is time to run some Clojure code and get these Neural Networks to learn something!
 
 Run the code from the REPL
 ```
@@ -147,4 +147,4 @@ lein run :gpu
 
 Congratulations! If you have followed along, you are now able to harness the power of Mxnet with Clojure on GPUs! Again, **do not forget to terminate your instance once you are done**.
 
-Next time, we will cover what Mxnet let us do and we will learn how to train Deep Learning Models.
+Next time, we will cover what Mxnet let us do and we will learn how to train Deep Learning models.
