@@ -53,7 +53,7 @@ Launch an EC2 instance with the AWS Deep Learning AMI base image. In this post I
 
 ![AMI Selection](/assets/images/aws-dl-ami/aws-ec2-ami-deep-learning-base.png)
 
-Then pick a GPU instance type. `p2.xlarge` shoud be enough to get you started and will cost you around `$0.90` per hour. Do not forget to terminate it after you are done with your Neural Network training.
+Then pick a GPU instance type. `p2.xlarge` shoud be enough to get you started and will cost you around `$0.90` per hour. **Do not forget to terminate it after you are done with your Neural Network training**.
 
 ![Instance Type Selection](/assets/images/aws-dl-ami/aws-ec2-ami-instance-type.png)
 
@@ -127,14 +127,24 @@ One can monitor the GPU processes with the following command
 ```
 watch nvidia-sim
 ```
+
+![nvidia-sim output](/assets/images/aws-dl-ami/aws-ec2-ami-nvidia-sim.png)
+
 Now it is time to run some Clojure Code and get these Neural Networks to learn something!
+
+Run the code from the REPL
 ```
 lein repl
 mnist-mlp=> (run-all [(context/gpu)])
 ```
 
+Or run the code from a leiningen command
+```
+lein run :gpu
+```
+
 ## Conclusion
 
-Congratulations! If you have followed along, you are now able to harness the power of Mxnet with Clojure on GPUs! Again, do not forget to terminate your instance once you are done.
+Congratulations! If you have followed along, you are now able to harness the power of Mxnet with Clojure on GPUs! Again, **do not forget to terminate your instance once you are done**.
 
 Next time, we will cover what Mxnet let us do and we will learn how to train Deep Learning Models.
