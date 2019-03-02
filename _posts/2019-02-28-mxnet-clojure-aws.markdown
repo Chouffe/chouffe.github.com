@@ -23,18 +23,17 @@ This post will cover how to setup such a box for Mxnet and Clojure so that any C
 
 Mxnet is the Deep Learning Framework developped jointly by Amazon and Microsoft. It is an incubating Apache Project.
 
-[Mxnet Homepage](https://mxnet.incubator.apache.org)
-
-[Mxnet project repository](https://github.com/apache/incubator-mxnet/tree/master/contrib/clojure-package/examples)
+* [Mxnet Homepage][1]
+* [Mxnet project repository][2]
 
 ## Mxnet and Clojure
 
-Long story short: by leveraging Scala, Clojure can talk to the Mxnet bindings. And this is amazing! Here is the [Clojure Package](https://github.com/apache/incubator-mxnet/tree/master/contrib/clojure-package) in the Mxnet repository.
+Long story short: by leveraging Scala, Clojure can talk to the Mxnet bindings. And this is amazing! Here is the [Clojure Package][3] in the Mxnet repository.
 
 ## AWS Deep Learning AMI
 
 AWS provides AMIs tailored to Deep Learning frameworks. They are pre-configured environments to quickly build deep learning applications.
-The AMI we will cover in this post is the **AWS Deep Learning AMI (base) image** - [Find it here](https://aws.amazon.com/machine-learning/amis/).
+The AMI we will cover in this post is the **AWS Deep Learning AMI (base) image** - [Find it here][4].
 
 ## Installation steps
 
@@ -148,3 +147,15 @@ lein run :gpu
 Congratulations! If you have followed along, you are now able to harness the power of Mxnet with Clojure on GPUs! Again, **do not forget to terminate your instance once you are done**.
 
 Next time, we will cover what Mxnet let us do and we will learn how to train Deep Learning models.
+
+## References and Resources
+
+* [Mxnet Website][1]
+* [Mxnet Github Repo][2]
+* [Mxnet Clojure Package Github][3]
+* [AWS Deep Learning AMIs][4]
+
+[1]: https://mxnet.incubator.apache.org
+[2]: https://github.com/apache/incubator-mxnet/
+[3]: https://github.com/apache/incubator-mxnet/tree/master/contrib/clojure-package
+[4]: https://aws.amazon.com/machine-learning/amis/
