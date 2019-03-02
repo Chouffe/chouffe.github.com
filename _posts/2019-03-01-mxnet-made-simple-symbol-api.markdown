@@ -20,6 +20,15 @@ In a [previous post][1], we explained what `NDArrays` are and how they are the b
 
 Now it is time to look at the **Symbol API** that lets us define a **Computation Graph**.
 
+### Before we begin...
+
+We will need to import certain packages:
+```clojure
+(require '[org.apache.clojure-mxnet.dtype :as d])
+(require '[org.apache.clojure-mxnet.ndarray :as ndarray])
+(require '[org.apache.clojure-mxnet.symbol :as sym])
+```
+
 ### Computation Graph and Symbols
 
 A Neural Network is a description of a computation to perform. Multiply this weight matrix with this input vector, perform an activation function, and so on. Mxnet gives us the tools to express these operations as a Graph of Computations.
@@ -62,6 +71,8 @@ Interessingly, one can query the information of the symbolic graph with the Symb
 One can also render the computation graph. It is a good practice to make sure the operations are well connected and we will also explain how to render computation graphs for Neural Networks.
 
 ```clojure
+(require '[org.apache.clojure-mxnet.visualization :as viz])
+
 ;; Render Computation Graph
 (defn render-computation-graph!
   "Render the `sym` and saves it as a pdf file in `path/sym-name.pdf`"
@@ -110,6 +121,8 @@ Lets bind the following values to the symbols:
 Now we can run the Graph and get the answer for `E`
 
 ```clojure
+(require '[org.apache.clojure-mxnet.executor :as executor])
+
 ;; Execute the graph operations `e`
 (-> e
     (sym/bind data-binding)
@@ -123,6 +136,8 @@ You have probably heard that Deep Learning Models need to be trained on GPUs.
 Mxnet gets us covered by letting us choose on which device we want to run the Computation Graph `E`
 
 ```clojure
+(require '[org.apache.clojure-mxnet.context :as context])
+
 ;; Execute the graph on a different device (cpu or gpu)
 (-> e
     ; (sym/bind (context/cpu 0) data-binding)
