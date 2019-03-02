@@ -64,7 +64,7 @@ With `0s` or `1s` values
   )
 ```
 
-#### Set NDarray Type
+#### Set NDArray Type
 
 An `NDArray` holds 32-bit floats by default
 ```clojure

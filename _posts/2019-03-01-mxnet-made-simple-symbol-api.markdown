@@ -1,5 +1,5 @@
 ---
-title:  "Mxnet made simple: Symbol API"
+title:  "Mxnet made simple: Clojure Symbol API"
 layout: post
 date: 2019-03-01 05:00
 image: /assets/images/mxnet-logo.png
@@ -89,7 +89,7 @@ The two computation graphs are identical. They both describe the same computatio
 ### Binding NDArrays to Symbols
 
 Now that the computation graph for `E` is defined, one would like to actually use it to make some calculations.
-Before being able to run the graph, we need to bind `NDArrays` to the dependencies of the computation Graph `E`. In our case, we need to bind `NDarrays` for `A`, `B`, `C` and `D`.
+Before being able to run the graph, we need to bind `NDArrays` to the dependencies of the computation Graph `E`. In our case, we need to bind `NDArrays` for `A`, `B`, `C` and `D`.
 
 Lets bind the following values to the symbols:
 

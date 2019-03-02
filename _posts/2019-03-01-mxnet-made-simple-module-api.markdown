@@ -1,5 +1,5 @@
 ---
-title:  "Mxnet made simple: Module API"
+title:  "Mxnet made simple: Clojure Module API"
 layout: post
 date: 2019-03-01 10:00
 image: /assets/images/mxnet-logo.png
@@ -15,9 +15,9 @@ author: arthurcaillau
 description: The Module API for training Neural Networks and making new predictions
 ---
 
-In a [previous post][1], we talked about the **Symbol API**. Computation Graph in mxnet are used to define the Neural Network topoligies. The **Module API** is used for training models and making new predictions.
+In a [previous post][1], we talked about the **Symbol API**. Computation Graphs in mxnet are used to define the Neural Network topoligies. The **Module API** is used for training models and making new predictions.
 
-We will follow these steps
+We will follow these steps:
 
 1. Generate a fake data set
 2. Design a Computation Graph for the model
@@ -64,7 +64,7 @@ We can check whether the generated data set is correct
 (take 10 (ndarray/->vec Y)) ;(2.0 0.0 8.0 2.0 7.0 9.0 1.0 0.0 0.0 5.0)
 ```
 
-Now we can split the data `80/20`. We would nnormally shuffle the `X` and `Y` sets to avoid potential bias in the data distribution.
+Now we can split the data `80/20`. We would normally shuffle the `X` and `Y` sets to avoid potential bias in the data distribution.
 
 ```clojure
 ;;; Splitting the Data Set in train/valid - 80/20
@@ -216,7 +216,7 @@ We always need to validate the model accuracy on a data set that has not been se
 ;; The model will not be able to predict anything!
 ```
 
-We get a 9% accuracy which is worse than random choice for 10 category classifier. Not really surprising given the fact that the dataset has been generated randomly: there is nothing valuable to learn in it!
+We get a 9% accuracy which is worse than random choice for a 10 category classifier. It is not really surprising given the fact that the dataset has been generated randomly: there is nothing valuable to learn in it! Data is garbage!
 
 ### Saving the model
 
