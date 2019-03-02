@@ -204,7 +204,7 @@ This post should give you the necessary background needed to understand symbolic
 * [Mxnet Github Repo][5]
 * [An introduction to the MXNet API — part 1][7]
 
-Here is also full code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
+Here is also the code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
 
 ```clojure
 (ns mxnet-clj-tutorials.ndarray

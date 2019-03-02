@@ -1,7 +1,7 @@
 ---
 title:  "Mxnet made simple: Symbol API"
 layout: post
-date: 2019-03-01 00:00
+date: 2019-03-01 05:00
 image: /assets/images/mxnet-logo.png
 headerImage: true
 tag:
@@ -146,13 +146,19 @@ One can save the computation graph on disk and reload it later to run it with ne
     ))
 ```
 
+## Conclusion
+
+This blog post explained the concept of a Computation Graph and how mxnet lets us define them. A Computation Graph can be queried, rendered and run when `NDArrays` are bound to it. We will use Computation Graphs a lot because Deep Learning Models are Computation Graphs!
+
+Next time, we will learn more about the **Module API** that allows us to train models and make new predictions.
+
 ## References and Resources
 
 * [Symbol API Reference][2]
 * [Mxnet official NDArray API tutorial][3]
 * [An introduction to the MXNet API — part 2][4]
 
-Here is also full code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
+Here is also the code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
 
 ```clojure
 (ns mxnet-clj-tutorials.symbol
