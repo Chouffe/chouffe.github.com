@@ -1,5 +1,5 @@
 ---
-title:  "Mxnet made simple: NDarray API"
+title:  "MXNet made simple: Clojure NDArray API"
 layout: post
 date: 2019-03-01 00:00
 image: /assets/images/mxnet-logo.png
@@ -15,19 +15,27 @@ author: arthurcaillau
 description: mxnet NDArray is the fundamental data structure used for Symbolic Computations
 ---
 
-An `NDarray` is an n-dimensional array that contains numerical values of identical type and size. They are called **tensors**. `NDarrays` generalize the concept of scalars and vectors.
+An `NDArray` is an n-dimensional array that contains numerical values of identical type and size. They are called **tensors**. `NDArrays` generalize the concept of scalars, vectors and matrices.
 
-Understanding `NDarray` is critical since it is the data structure that will be used to perform neural network operations. A Neural Network is nothing more than a function that takes in `Ndarrays` and returns `Ndarrays` performing some tensor computations that will be described in an other post.
+Understanding `NDArray` is critical since it is the data structure that will be used to perform neural network operations. A Neural Network is nothing more than a function that takes in `NDArray`s and returns `NDArray`s performing some tensor computations that will be described in a following post. In this post, I will walk you through how we can create `NDArray`s and perform simple operations on them  using `Clojure MXNet`.
 
 ```haskell
-NeuralNetwork :: [Ndarray] -> [NDarray]
+NeuralNetwork :: [NDArray] -> [NDArray]
 ```
 
 ##### Notes
 
+[Apache MXNet][1] is a open-source Deep Learning framework that is an alternative to Google's [Tensorflow][2]. A Neural Network is a description of how **tensors** flow!
+
 If you are familiar with `Python`, the [numpy][3] library provides a very similar abstraction.
 
-[Tensorflow][2] is the Deep Learning framework of Google. A Neural Network is a description of how **tensors** flow!
+### Before we begin...
+
+We will need to import certain packages:
+```clojure
+(require '[org.apache.clojure-mxnet.ndarray :as ndarray])
+(require '[org.apache.clojure-mxnet.dtype :as d])
+```
 
 ### Basic Operations
 
@@ -65,14 +73,14 @@ An `NDArray` holds 32-bit floats by default
 ;; Getting the dtype
 (ndarray/dtype a) ;#object[scala.Enumeration$Val 0x781578fc "float32"]
 ```
-It can be changed to another numeric type
+Its type can be change to another numeric type
 ```clojure
 (let [b (ndarray/as-type a d/INT32)]
   (println (ndarray/dtype b)) ;#object[scala.Enumeration$Val 0x7364f96f int32]
   (println (ndarray/->vec b)) ;[1.0 2.0 3.0 4.0 5.0 6.0]
   )
 ```
-Here is the list of `dtype` available in mxnet:
+Here is the list of `dtype`s available in mxnet:
 
 * `UINT8`
 * `INT32`
@@ -82,7 +90,7 @@ Here is the list of `dtype` available in mxnet:
 
 ### Tensor Operations
 
-Mxnet supports a lot of tensor operations. Only a few will be discussed in this post. You can look at the [NDarray API reference](https://mxnet.incubator.apache.org/api/clojure/docs/org.apache.clojure-mxnet.ndarray.html) when needed.
+MXNet supports a lot of tensor operations. Only a few will be discussed in this post. You can look at the [NDArray API reference][4] when needed.
 
 #### Arithmetic Operations
 
@@ -149,9 +157,11 @@ A very important idea in Machine Learning is randomness. We will see later on th
   )
 ```
 
-Mxnet also provides a namespace named `random` containing the following random initialization of `NDArray`s
+MXNet also provides a namespace named `random` containing the following random initialization of `NDArray`s
 
 ```clojure
+(require '[org.apache.clojure-mxnet.random :as random])
+
 ;; Initializing random ndarrays with `random`
 (let [u (random/uniform 0 1 [2 2])
       g (random/normal 0 1 [2 2])]
@@ -169,7 +179,7 @@ Mxnet also provides a namespace named `random` containing the following random i
 ## Data Processing
 
 Machine Learning Models are trained on images, texts, videos, etc.
-The data needs to be converted into `NDArrays` for the models to use it.
+The data needs to be converted into `NDArray`s for the models to use it.
 
 But fear not, it is often very simple to do so. The next section will detail how one would do it with an image.
 
@@ -186,22 +196,22 @@ This digit is a 2-dimensional vector containing pixel values in the range `[0, 2
 ![Digit 8 pixel values](/assets/images/mnist-8-values.png){: .center-image }
 <figcaption class="caption">2-dimensional vector of pixel values</figcaption>
 
-An image from this Dataset can easily be converted into an `NDarray` and then used by the models.
+An image from this Dataset can easily be converted into an `NDArray` and then used by the models.
 
 ## Conclusion
 
-`NDArrays` are the core datastructures used in mxnet. Understanding what they are and what one can do with them is fundamental.
+`NDArrays` are the core data-structures used in MXNet. Understanding what they are and what one can do with them is fundamental.
 
 This post should give you the necessary background needed to understand symbolic computations that will be covered in the next post.
 
 ## References and Resources
 
-* [NDarray API Reference][1]
-* [Mxnet official NDArray API tutorial][6]
+* [MXNet Website][1]
 * [Tensorflow Website][2]
 * [Numpy Website][3]
-* [Mxnet Website][4]
-* [Mxnet Github Repo][5]
+* [NDArray API Reference][4]
+* [MXNet official NDArray API tutorial][6]
+* [MXNet Github Repo][5]
 * [An introduction to the MXNet API — part 1][7]
 
 Here is also the code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
@@ -307,10 +317,10 @@ Here is also the code used in this post - also available in this [repository](ht
   )
 ```
 
-[1]: https://mxnet.incubator.apache.org/api/clojure/docs/org.apache.clojure-mxnet.ndarray.html
+[1]: https://mxnet.apache.org/
 [2]: https://www.tensorflow.org/
 [3]: https://www.numpy.org/
-[4]: https://mxnet.incubator.apache.org/
+[4]: https://mxnet.incubator.apache.org/api/clojure/docs/org.apache.clojure-mxnet.ndarray.html
 [5]: https://github.com/apache/incubator-mxnet
 [6]: https://mxnet.incubator.apache.org/api/clojure/ndarray.html
 [7]: https://becominghuman.ai/an-introduction-to-the-mxnet-api-part-1-848febdcf8ab
