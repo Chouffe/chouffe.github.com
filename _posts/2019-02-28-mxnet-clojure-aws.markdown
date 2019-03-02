@@ -1,5 +1,5 @@
 ---
-title:  "Getting Started with Clojure and Mxnet on AWS"
+title:  "Getting started with Clojure and mxnet on AWS"
 layout: post
 date: 2019-02-28 00:00
 image: /assets/images/mxnet-logo.png
