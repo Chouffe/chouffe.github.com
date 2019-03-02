@@ -21,7 +21,7 @@ layout: page
   <li><strong>Airbnb</strong>: Belong Anywhere | Full Stack Software Engineer / Machine Learning Engineer</li>
   <li><strong>Trullo</strong>: Share, discuss and discover the things you love | Founding Member / Full Stack Software Engineer</li>
 	<li><strong>LumApps</strong>: The Intranet recommended for Google’s G Suite | Full Stack Software Engineering Intern</li>
-	<li><strong>INRIA</strong>: French Institute for Research in Computer Science and AutomationThe | Full Stack Software Engineering Intern</li>
+	<li><strong>INRIA</strong>: The French Institute for Research in Computer Science and Automation | Full Stack Software Engineering Intern</li>
 </ul>
 
 <h2>Skills</h2>
