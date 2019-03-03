@@ -1,5 +1,5 @@
 ---
-title:  "Mxnet made simple: Clojure Module API"
+title:  "MXNet made simple: Clojure Module API"
 layout: post
 date: 2019-03-01 10:00
 image: /assets/images/mxnet-logo.png
@@ -15,7 +15,7 @@ author: arthurcaillau
 description: The Module API for training Neural Networks and making new predictions
 ---
 
-In a [previous post][1], we talked about the **Symbol API**. Computation Graphs in mxnet are used to define the Neural Network topoligies. The **Module API** is used for training models and making new predictions.
+In a [previous post][1], we talked about the **Symbol API**. Computation Graphs in MXNet are used to define the Neural Network topoligies. The **Module API** is used for training models and making new predictions.
 
 We will follow these steps:
 
@@ -125,7 +125,7 @@ We can also generate te Computation Graph of the Model to understand what it doe
 
 #### Building the Data Iterator
 
-Before training the model, we need a way to iterate over the data sets that we have generated earlier. Mxnet provides an abstaction called `NDIter` that lets us just do that.
+Before training the model, we need a way to iterate over the data sets that we have generated earlier. MXNet provides an abstaction called `NDIter` that lets us just do that.
 
 ```clojure
 ;;; Building the Data Iterator
@@ -245,7 +245,7 @@ The **Module API** makes it simple to train models and also make new predictions
 
 ## References and Resources
 
-* [Mxnet official Module API tutorial][3]
+* [MXNet official Module API tutorial][3]
 * [Module API Reference][4]
 * [An introduction to the MXNet API — part 3][2]
 

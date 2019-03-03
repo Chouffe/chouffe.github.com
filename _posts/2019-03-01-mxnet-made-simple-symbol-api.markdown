@@ -1,5 +1,5 @@
 ---
-title:  "Mxnet made simple: Clojure Symbol API"
+title:  "MXNet made simple: Clojure Symbol API"
 layout: post
 date: 2019-03-01 05:00
 image: /assets/images/mxnet-logo.png
@@ -13,10 +13,10 @@ tag:
 star: true
 category: blog
 author: arthurcaillau
-description: The Symbol API provides a Symbolic Computation Graph in mxnet
+description: The Symbol API provides a Symbolic Computation Graph in MXNet
 ---
 
-In a [previous post][1], we explained what `NDArrays` are and how they are the building blocks of the mxnet framework.
+In a [previous post][1], we explained what `NDArrays` are and how they are the building blocks of the MXNet framework.
 
 Now it is time to look at the **Symbol API** that lets us define a **Computation Graph**.
 
@@ -31,7 +31,7 @@ We will need to import certain packages:
 
 ### Computation Graph and Symbols
 
-A Neural Network is a description of a computation to perform. Multiply this weight matrix with this input vector, perform an activation function, and so on. Mxnet gives us the tools to express these operations as a Graph of Computations.
+A Neural Network is a description of a computation to perform. Multiply this weight matrix with this input vector, perform an activation function, and so on. MXNet gives us the tools to express these operations as a Graph of Computations.
 
 Below is an example of a simple computation graph. It describes what `E` is in terms of **operations** and **dependencies**.
 
@@ -40,7 +40,7 @@ Below is an example of a simple computation graph. It describes what `E` is in t
 
 This Graph is a description of the operations that are needed to compute `(A * B) + (C * D)`. At this point, nobody cares what `A`, `B`, `C` or `D` are. They are pure symbols.
 
-Here is how one can define this computation graph in mxnet
+Here is how one can define this computation graph in MXNet
 ```clojure
 ;; Define Input data as Variable
 (def a (sym/variable "A"))
@@ -93,7 +93,7 @@ One can also render the computation graph. It is a good practice to make sure th
 ```
 
 ![Computation Graph e Rendered with mxnet](/assets/images/computation-graph-e-mxnet.png){: .center-image :}
-<figcaption class="caption">Computation Graph: E = (A * B) + (C * D) rendered in mxnet</figcaption>
+<figcaption class="caption">Computation Graph: E = (A * B) + (C * D) rendered in MXNet</figcaption>
 
 The two computation graphs are identical. They both describe the same computation `E`.
 
@@ -133,7 +133,7 @@ Now we can run the Graph and get the answer for `E`
 ```
 
 You have probably heard that Deep Learning Models need to be trained on GPUs.
-Mxnet gets us covered by letting us choose on which device we want to run the Computation Graph `E`
+MXNet gets us covered by letting us choose on which device we want to run the Computation Graph `E`
 
 ```clojure
 (require '[org.apache.clojure-mxnet.context :as context])
@@ -163,14 +163,14 @@ One can save the computation graph on disk and reload it later to run it with ne
 
 ## Conclusion
 
-This blog post explained the concept of a Computation Graph and how mxnet lets us define them. A Computation Graph can be queried, rendered and run when `NDArrays` are bound to it. We will use Computation Graphs a lot because Deep Learning Models are Computation Graphs!
+This blog post explained the concept of a Computation Graph and how MXNet lets us define them. A Computation Graph can be queried, rendered and run when `NDArrays` are bound to it. We will use Computation Graphs a lot because Deep Learning Models are Computation Graphs!
 
 Next time, we will learn more about the **Module API** that allows us to train models and make new predictions.
 
 ## References and Resources
 
 * [Symbol API Reference][2]
-* [Mxnet official NDArray API tutorial][3]
+* [MXNet official NDArray API tutorial][3]
 * [An introduction to the MXNet API — part 2][4]
 
 Here is also the code used in this post - also available in this [repository](https://github.com/Chouffe/mxnet-clj-tutorials)
