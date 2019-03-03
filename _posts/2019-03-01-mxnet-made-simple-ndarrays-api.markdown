@@ -80,7 +80,7 @@ Its type can be change to another numeric type
   (println (ndarray/->vec b)) ;[1.0 2.0 3.0 4.0 5.0 6.0]
   )
 ```
-Here is the list of `dtype`s available in mxnet:
+Here is the list of `dtype`s available in MXNet:
 
 * `UINT8`
 * `INT32`
@@ -94,6 +94,8 @@ MXNet supports a lot of tensor operations. Only a few will be discussed in this 
 
 #### Arithmetic Operations
 
+All the basic arithmetic operations you know are available on `NDArrays`: `+`, `-`, `*`, `\`, etc.
+
 ```clojure
 (let [b (ndarray/ones [1 5])
       c (ndarray/zeros [1 5])]
@@ -104,20 +106,29 @@ MXNet supports a lot of tensor operations. Only a few will be discussed in this 
 
 #### Slice Operations
 
+Slicing `NDArrays` is really useful in the case of images. For instance, we could slice the red pixel values from the `NDArray` representing an RGB image.
+
 ```clojure
-(let [b (ndarray/array [1 2 3 4 5 6] [3 2])
-      b1 (ndarray/slice b 1)
-      b2 (ndarray/slice b 1 3)]
+;; Slice Operations
+(let [b (ndarray/array (range 1 (inc (* 3 2 2))) [3 2 2]) ; Pretend b is an RGB image of size 2x2
+      b0 (ndarray/slice b 0) ;; Retrieving the red pixel values
+      b1 (ndarray/slice b 1)  ;; Retrieving the green pixel values
+      b2 (ndarray/slice b 1 3)] ;; Retrieving the green and blue pixel values
 
-  (println (ndarray/->vec b1)) ;[3.0 4.0]
-  (println (ndarray/shape-vec b1)) ;[1 2]
+  (println (ndarray/->vec b0)) ;[1.0 2.0 3.0 4.0]
+  (println (ndarray/shape-vec b0)) ;[1 2 2]
 
-  (println (ndarray/->vec b2)) ;[3.0 4.0 5.0 6.0]
-  (println (ndarray/shape-vec b2)) ;[2 2]
+  (println (ndarray/->vec b1)) ;[5.0 6.0 7.0 8.0]
+  (println (ndarray/shape-vec b1)) ;[1 2 2]
+
+  (println (ndarray/->vec b2)) ;[5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0]
+  (println (ndarray/shape-vec b2)) ;[2 2 2]
   )
 ```
 
 #### Transposition
+
+Transposing `NDArrays` in an efficient way is important when carrying out matrix operations in a Neural Network
 
 ```clojure
 (let [at (ndarray/transpose a)]
@@ -127,6 +138,8 @@ MXNet supports a lot of tensor operations. Only a few will be discussed in this 
 ```
 
 #### Dot Product
+
+The famous **Dot Product** is also available for `NDArrays`. Very useful when designing evaluation metrics for instance.
 
 ```clojure
 (let [b (ndarray/transpose a)
@@ -157,7 +170,7 @@ A very important idea in Machine Learning is randomness. We will see later on th
   )
 ```
 
-MXNet also provides a namespace named `random` containing the following random initialization of `NDArray`s
+MXNet also provides a namespace named `random` containing the following probability distributions to initialize `NDArrays`
 
 ```clojure
 (require '[org.apache.clojure-mxnet.random :as random])
@@ -179,9 +192,10 @@ MXNet also provides a namespace named `random` containing the following random i
 ## Data Processing
 
 Machine Learning Models are trained on images, texts, videos, etc.
-The data needs to be converted into `NDArray`s for the models to use it.
+The data needs to be converted into `NDArray`s for the models to use it. This processing step is necessary to train the models and make new predictions.
 
-But fear not, it is often very simple to do so. The next section will detail how one would do it with an image.
+
+The next section will detail how one would do it with images.
 
 #### MNIST Dataset
 
@@ -197,10 +211,59 @@ This digit is a 2-dimensional vector containing pixel values in the range `[0, 2
 <figcaption class="caption">2-dimensional vector of pixel values</figcaption>
 
 An image from this Dataset can easily be converted into an `NDArray` and then used by the models.
+MXNet provides an `image` namespace for loading image data into `NDArrays`.
+
+```clojure
+(require '[org.apache.clojure-mxnet.image :as mx-img])
+
+;;; Loading Data as NDArrays
+(let [img-filename "images/mnist_digit_8.jpg"  ;; MNIST digit 8 sample
+      img-grayscale-nd (mx-img/read-image img-filename {:color-flag 0})
+      img-color-nd (mx-img/read-image img-filename {:color-flag 1})]
+  ;; Grayscale image
+  (println (ndarray/shape-vec img-grayscale-nd)) ;[28 28 1]
+  (println (ndarray/dtype img-grayscale-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+
+  ;; Color Image
+  (println (ndarray/shape-vec img-color-nd)) ;[28 28 3]
+  (println (ndarray/dtype img-color-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+  )
+```
+
+The code above demonstrates how to read images from disk and turn them into `NDArrays`.
+The `color-flag` parameter in the `mx-img/read-image` function tells MXNet to load either the image in grayscale (only one channel) or with colors (three channels).
+
+Under the hood, MXNet uses **OpenCV** to read images from disk. One can directly use OpenCV to do it
+
+```clojure
+(require '[opencv4.core :as cv])
+(require '[opencv4.utils :as cvu])
+
+;; With OpenCV
+(let [img-filename "images/mnist_digit_8.jpg"  ;; MNIST digit 8 sample
+      img-grayscale-nd  (-> img-filename
+                            (cv/imread cv/COLOR_BGR2GRAY)
+                            cvu/mat->flat-rgb-array
+                            (ndarray/array [28 28 1]))
+      img-color-nd (-> img-filename
+                       cv/imread
+                       cvu/mat->flat-rgb-array
+                       (ndarray/array [28 28 3]))]
+  ;; Grayscale Image
+  (println (ndarray/shape-vec img-grayscale-nd)) ;[28 28 1]
+  (println (ndarray/dtype img-grayscale-nd)) ;#object[scala.Enumeration$Val 0x328889c6 float]
+
+  ;; Color Image
+  (println (ndarray/shape-vec img-color-nd)) ;[28 28 3]
+  (println (ndarray/dtype img-color-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+  )
+```
 
 ## Conclusion
 
 `NDArrays` are the core data-structures used in MXNet. Understanding what they are and what one can do with them is fundamental.
+
+Being able to transform your raw data (images, text, videos, ...) into `NDArray` is an important skill because everything that will flow into your models will be `NDArrays`.
 
 This post should give you the necessary background needed to understand symbolic computations that will be covered in the next post.
 
@@ -222,8 +285,12 @@ Here is also the code used in this post - also available in this [repository](ht
   (:require
     [org.apache.clojure-mxnet.dtype :as d]
     [org.apache.clojure-mxnet.ndarray :as ndarray]
+    [org.apache.clojure-mxnet.image :as mx-img]
     [org.apache.clojure-mxnet.random :as random]
-    [org.apache.clojure-mxnet.shape :as mx-shape]))
+    [org.apache.clojure-mxnet.shape :as mx-shape]
+
+    [opencv4.core :as cv]
+    [opencv4.utils :as cvu]))
 
 ;; Create an `ndarray` with content set to a specific value
 (def a
@@ -262,16 +329,24 @@ Here is also the code used in this post - also available in this [repository](ht
   (println (ndarray/->vec (ndarray/* b c))) ;[0.0 0.0 0.0 0.0 0.0]
   )
 
+(let [b (ndarray/array (range 1 (inc (* 3 3 3))) [3 3 3])]
+  (ndarray/shape-vec (ndarray/slice b 1))
+  )
+
 ;; Slice Operations
-(let [b (ndarray/array [1 2 3 4 5 6] [3 2])
-      b1 (ndarray/slice b 1)
-      b2 (ndarray/slice b 1 3)]
+(let [b (ndarray/array (range 1 (inc (* 3 2 2))) [3 2 2]) ; Pretend b is an RGB image of size 2x2
+      b0 (ndarray/slice b 0) ;; Retrieving the red pixel values
+      b1 (ndarray/slice b 1)  ;; Retrieving the green pixel values
+      b2 (ndarray/slice b 1 3)] ;; Retrieving the green and blue pixel values
 
-  (println (ndarray/->vec b1)) ;[3.0 4.0]
-  (println (ndarray/shape-vec b1)) ;[1 2]
+  (println (ndarray/->vec b0)) ;[1.0 2.0 3.0 4.0]
+  (println (ndarray/shape-vec b0)) ;[1 2 2]
 
-  (println (ndarray/->vec b2)) ;[3.0 4.0 5.0 6.0]
-  (println (ndarray/shape-vec b2)) ;[2 2]
+  (println (ndarray/->vec b1)) ;[5.0 6.0 7.0 8.0]
+  (println (ndarray/shape-vec b1)) ;[1 2 2]
+
+  (println (ndarray/->vec b2)) ;[5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0]
+  (println (ndarray/shape-vec b2)) ;[2 2 2]
   )
 
 ;; Transposition
@@ -315,6 +390,44 @@ Here is also the code used in this post - also available in this [repository](ht
   (println (ndarray/shape-vec g)) ;[2 2]
   (println (ndarray/->vec g)) ;[1.2662556 0.8950642 -0.6015945 1.2040559]
   )
+
+;;; Loading Data as NDArrays
+
+;; With mxnet `image` API
+(let [img-filename "images/mnist_digit_8.jpg"  ;; MNIST digit 8 sample
+      img-grayscale-nd (mx-img/read-image img-filename {:color-flag 0})
+      img-color-nd (mx-img/read-image img-filename {:color-flag 1})]
+  ;; Grayscale image
+  (println (ndarray/shape-vec img-grayscale-nd)) ;[28 28 1]
+  (println (ndarray/dtype img-grayscale-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+
+  ;; Color Image
+  (println (ndarray/shape-vec img-color-nd)) ;[28 28 3]
+  (println (ndarray/dtype img-color-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+  )
+
+;; With OpenCV
+(let [img-filename "images/mnist_digit_8.jpg"  ;; MNIST digit 8 sample
+      img-grayscale-nd  (-> img-filename
+                            (cv/imread cv/COLOR_BGR2GRAY)
+                            cvu/mat->flat-rgb-array
+                            (ndarray/array [28 28 1]))
+      img-color-nd (-> img-filename
+                       cv/imread
+                       cvu/mat->flat-rgb-array
+                       (ndarray/array [28 28 3]))]
+  ;; Grayscale Image
+  (println (ndarray/shape-vec img-grayscale-nd)) ;[28 28 1]
+  (println (ndarray/dtype img-grayscale-nd)) ;#object[scala.Enumeration$Val 0x328889c6 float]
+
+  ;; Color Image
+  (println (ndarray/shape-vec img-color-nd)) ;[28 28 3]
+  (println (ndarray/dtype img-color-nd)) ;#object[scala.Enumeration$Val 0x328889c6 uint8]
+  )
+
+;; Note:
+;; * OpenCV default for channel ordering is `BGR`
+;; * mxnet default for channel ordering is `RGB`
 ```
 
 [1]: https://mxnet.apache.org/
