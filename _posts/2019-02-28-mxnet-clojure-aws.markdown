@@ -1,5 +1,5 @@
 ---
-title:  "Getting started with Clojure and mxnet on AWS"
+title:  "Getting started with Clojure and MXNet on AWS"
 layout: post
 date: 2019-02-28 00:00
 image: /assets/images/mxnet-logo.png
@@ -12,23 +12,23 @@ tag:
 star: true
 category: blog
 author: arthurcaillau
-description: Learn how to get started with Mxnet and Clojure on AWS
+description: Learn how to get started with MXNet and Clojure on AWS
 ---
 
 Setting up a Deep Learning development box is often a tedious task that requires one to install the proper drivers and toolkits for the given Deep Learning Framework.
 
-This post will cover how to setup such a box for Mxnet and Clojure so that any Clojurist can start playing with Mxnet on GPUs.
+This post will cover how to setup such a box for MXNet and Clojure so that any Clojurist can start playing with MXNet on GPUs.
 
-## Mxnet
+## MXNet
 
-Mxnet is the Deep Learning Framework developped jointly by Amazon and Microsoft. It is an incubating Apache Project.
+MXNet is the Deep Learning Framework developped jointly by Amazon and Microsoft. It is an incubating Apache Project.
 
-* [Mxnet Homepage][1]
-* [Mxnet project repository][2]
+* [MXNet Homepage][1]
+* [MXNet project repository][2]
 
-## Mxnet and Clojure
+## MXNet and Clojure
 
-Long story short: by leveraging Scala, Clojure can talk to the Mxnet bindings. And this is amazing! Here is the [Clojure Package][3] in the Mxnet repository.
+Long story short: by leveraging Scala, Clojure can talk to the MXNet bindings. And this is amazing! Here is the [Clojure Package][3] in the MXNet repository.
 
 ## AWS Deep Learning AMI
 
@@ -37,14 +37,14 @@ The AMI we will cover in this post is the **AWS Deep Learning AMI (base) image**
 
 ## Installation steps
 
-Below are the steps one needs to follow to start playing with Mxnet and Clojure on GPUs
+Below are the steps one needs to follow to start playing with MXNet and Clojure on GPUs
 
 1. Launch an EC2 instance
 2. Connect to the EC2 instance
 3. Update Java to Java 8
 4. Update Cuda version
 5. Install leiningen
-6. Play with Clojure Mxnet Examples
+6. Play with Clojure MXNet Examples
 
 #### Launch an EC2 instance
 
@@ -72,7 +72,7 @@ sudo update-alternatives --config java
 
 #### Update Cuda version
 
-From the EC2 instance, run the following commands to use the proper Cuda version required to run Mxnet. For `Mxnet 1.4.0`, one needs `cuda-9.2`
+From the EC2 instance, run the following commands to use the proper Cuda version required to run MXNet. For `MXNet 1.4.0`, one needs `cuda-9.2`
 
 ```
 sudo rm /usr/local/cuda
@@ -90,9 +90,9 @@ mv lein /usr/bin
 lein
 ```
 
-#### Play with Clojure Mxnet Examples
+#### Play with Clojure MXNet Examples
 
-First, one needs to clone the Mxnet codebase that comes with Clojure examples
+First, one needs to clone the MXNet codebase that comes with Clojure examples
 ```
 git clone https://github.com/apache/incubator-mxnet.git
 ```
@@ -144,15 +144,15 @@ lein run :gpu
 
 ## Conclusion
 
-Congratulations! If you have followed along, you are now able to harness the power of Mxnet with Clojure on GPUs! Again, **do not forget to terminate your instance once you are done**.
+Congratulations! If you have followed along, you are now able to harness the power of MXNet with Clojure on GPUs! Again, **do not forget to terminate your instance once you are done**.
 
-Next time, we will cover what Mxnet let us do and we will learn how to train Deep Learning models.
+Next time, we will cover what MXNet let us do and we will learn how to train Deep Learning models.
 
 ## References and Resources
 
-* [Mxnet Website][1]
-* [Mxnet Github Repo][2]
-* [Mxnet Clojure Package Github][3]
+* [MXNet Website][1]
+* [MXNet Github Repo][2]
+* [MXNet Clojure Package Github][3]
 * [AWS Deep Learning AMIs][4]
 
 [1]: https://mxnet.incubator.apache.org
