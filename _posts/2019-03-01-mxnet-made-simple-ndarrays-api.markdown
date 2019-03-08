@@ -12,7 +12,7 @@ tag:
 star: true
 category: blog
 author: arthurcaillau
-description: mxnet NDArray is the fundamental data structure used for Symbolic Computations
+description: MXNet NDArray is the fundamental data structure used for Symbolic Computations
 ---
 
 An `NDArray` is an n-dimensional array that contains numerical values of identical type and size. They are called **tensors**. `NDArrays` generalize the concept of scalars, vectors and matrices.
