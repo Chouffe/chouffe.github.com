@@ -224,7 +224,7 @@ Here is a summary of the models we rendered in this tutorial
 
 ## Conclusion
 
-The Symbol VisualizationModule API** makes it simple to visualize any models: pretrained and user defined. It is good practice to make sure the topology of a model makes sense before training it or making predictions.
+The **Symbol Visualization API** makes it simple to visualize any models: pretrained and user defined. It is good practice to make sure the topology of a model makes sense before training it or making predictions.
 
 ## References and Resources
 
