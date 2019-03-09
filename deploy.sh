@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export AWS_PROFILE=personal
+
 # Building the static website with jekyll
 jekyll build
 
