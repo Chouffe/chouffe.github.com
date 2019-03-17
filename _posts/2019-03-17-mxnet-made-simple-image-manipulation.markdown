@@ -1,7 +1,7 @@
 ---
 title:  "MXNet made simple: Image Manipulation with OpenCV and MXNet"
 layout: post
-date: 2019-03-11 00:00
+date: 2019-03-17 00:00
 image: /assets/images/mxnet-logo.png
 headerImage: true
 tag:
@@ -107,11 +107,14 @@ The function `preview!` lets you load images in memory and display them
 
 ## Image preprocessing
 
+#### Resizing, Scaling, Normalizing
+
 When working with image datasets, we always have to preprocess them. Below is a list of preprocessing steps that are commonly done:
 
 * Subtract mean of a pixel value for Red, Green and Blue channels
 * Resize an image to fit the expected dimensions of a model
-* Rescale pixel values linearly from a range to another - Eg. `(-125, 125) -> (0, 250)`
+* Rescale pixel values linearly from a range to another - Eg. `(-128, 127) -> (0, 127)`
+* Normalize pixel values into the `(0.0, 1.0)` range
 
 ```clojure
 (defn preprocess-mat
@@ -123,8 +126,11 @@ When working with image datasets, we always have to preprocess them. Below is a 
       (cv/add! (cv/new-scalar 103.939 116.779 123.68))
       ;; Resize
       (cv/resize! (cv/new-size 400 400))
-      ;; Maps pixel values from [-125, 125] to [0, 250]
-      (cv/convert-to! cv/CV_8SC3 0.5)))
+      ;; Maps pixel values from [-128, 127] to [0, 127]
+      (cv/convert-to! cv/CV_8SC3 0.5)
+      ;; Normalize pixel values into (0.0, 1.0)
+      ; (cv/normalize! 0.0 1.0 cv/NORM_MINMAX cv/CV_32FC1)
+      ))
 ```
 
 One can now visualize what the processing steps do to an image
@@ -140,6 +146,93 @@ One can now visualize what the processing steps do to an image
 
 ![Preprocessed Cat](/assets/images/cat-preprocessed.jpg){: .center-image }
 <figcaption class="caption">Preprocessed Cat</figcaption>
+
+#### Raw Byte Values
+
+[Origami][3], the Clojure OpenCV wrapper, provides serveral utility functions to make it simple to look at raw byte values. One would need to do this when performing preprocessing steps in order to check that is was done properly at the pixel value level.
+
+```clojure
+;; Looking at the raw bytes
+(-> "images/dog.jpg"
+    ;; Read image from disk
+    (mx-img/read-image {:to-rgb false})
+    ;; Resizing image
+    (mx-img/resize-image 200 200)
+    ;; Convert NDArray to Mat
+    (mx-cv/ndarray-to-mat)
+    ;; Mat to bytes
+    (cv/<<)
+    (cv/->bytes)
+    (vec))
+```
+
+* `cv/<<`: converts the `mat` to bytes
+* `cv/->bytes` returns the byte values from the mat as a `byte-array`
+
+#### Color channels
+
+A color image is represented as a matrix of pixel values for each red, green and blue channels. It is generally useful to look at a specific color channel of an image.
+
+```clojure
+(defn mat->color-mat
+  "Returns Mat of the selected channel.
+   Assumes the Mat is in RGB format.
+
+  `mat`: Mat object from OpenCV
+  `color`: value in #{:red :green :blue}
+
+  Ex
+    (mat->color-mat m :green)
+    (mat->color-mat m :blue)"
+  [mat color]
+  (let [color->selector #(get {:red first :green second :blue last} % first)]
+    ((color->selector color) (cv/split! mat))))
+```
+
+We can now use the `mat->color-mat` function to display the color channel of the cat image
+
+```clojure
+;; Display all channels (blue, green and red) of a picture
+(-> "images/cat.jpg"
+    ;; Read image from disk
+    (mx-img/read-image {:to-rgb true})
+    ;; Resize
+    (mx-img/resize-image 200 200)
+    ;; Convert NDArray to Mat
+    (mx-cv/ndarray-to-mat)
+    ;; Extract the different color channels
+    ((juxt #(mat->color-mat % :blue)
+           #(mat->color-mat % :green)
+           #(mat->color-mat % :red)))
+    ;; Display the images
+    (#(map cvu/imshow %)))
+```
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;width:100%;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+.tg .tg-0pky{border-color:#ccc;border-width:1px;text-align:middle;vertical-align:top;font-family:bold; width:33%;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+  <tr>
+    <th class="tg-0pky">Red Channel</th>
+    <th class="tg-0pky">Blue Channel</th>
+    <th class="tg-0pky">Green Channel</th>
+  </tr>
+  <tr>
+    <td class="tg-0lax">
+      <img class="small-image" src="/assets/images/cat-red-channel.jpg" alt="Cat Red Channel" />
+    </td>
+    <td class="tg-0lax">
+      <img class="small-image" src="/assets/images/cat-blue-channel.jpg" alt="Cat Blue Channel" />
+    </td>
+    <td class="tg-0lax">
+      <img class="small-image" src="/assets/images/cat-green-channel.jpg" alt="Cat Green Channel" />
+    </td>
+  </tr>
+</table>
 
 ## Type conversions
 
@@ -346,8 +439,11 @@ Here is also the code used in this post - also available in this [repository](ht
       (cv/add! (cv/new-scalar 103.939 116.779 123.68))
       ;; Resize
       (cv/resize! (cv/new-size 400 400))
-      ;; Maps pixel values from [-125, 125] to [0, 250]
-      (cv/convert-to! cv/CV_8SC3 0.5)))
+      ;; Maps pixel values from [-128, 128] to [0, 127]
+      (cv/convert-to! cv/CV_8SC3 0.5)
+      ;; Normalize pixel values into (0.0, 1.0)
+      ; (cv/normalize! 0.0 1.0 cv/NORM_MINMAX cv/CV_32FC1)
+      ))
 
 (defn mat->ndarray
   "Convert a `mat` from OpenCV to an MXNet `ndarray`"
@@ -401,6 +497,20 @@ Here is also the code used in this post - also available in this [repository](ht
     (doseq [{:keys [label top-left bottom-right] :as result} results]
       (draw-bounding-box! img result)))
 
+  (defn mat->color-mat
+    "Returns Mat of the selected channel.
+     Assumes the Mat is in RGB format.
+
+    `mat`: Mat object from OpenCV
+    `color`: value in #{:red :green :blue}
+
+    Ex
+      (mat->color-mat m :green)
+      (mat->color-mat m :blue)"
+    [mat color]
+    (let [color->selector #(get {:red first :green second :blue last} % first)]
+      ((color->selector color) (cv/split! mat))))
+
 (comment
 
   ;; Download a cat image from a `uri` and save it into `images/cat.jpg`
@@ -417,11 +527,10 @@ Here is also the code used in this post - also available in this [repository](ht
 
   ;; Visualize preprocessing steps
   (-> "images/cat.jpg"
-      cv/imread
-      preprocess-mat
-      cvu/imshow))
+      (cv/imread)
+      (preprocess-mat)
+      (cvu/imshow))
 
-(comment
   ;; Writing image to disk
   (-> "images/dog.jpg"
       ;; Convert filename to NDArray
@@ -429,7 +538,7 @@ Here is also the code used in this post - also available in this [repository](ht
       ;; Resizing image to height = 400, width = 400
       (mx-img/resize-image 400 400)
       ;; Convert to BufferedImage
-      mx-img/to-image
+      (mx-img/to-image)
       ;; Saving BufferedImage to disk
       (javax.imageio.ImageIO/write "jpg" (java.io.File. "test2.jpg")))
 
@@ -438,54 +547,94 @@ Here is also the code used in this post - also available in this [repository](ht
       ;; Load image from disk
       (mx-img/read-image {:to-rgb true})
       ;; Convert NDArray to Mat
-      ndarray->mat
+      (ndarray->mat)
       ;; Save Image to disk
       (cv/imwrite "test-digit.jpg"))
-      ; cvu/imshow
+  ; cvu/imshow
 
   ;; Showing an image using `buffered-image-to-mat`
   (-> "images/dog.jpg"
       ;; Read image from disk
       (mx-img/read-image {:to-rgb true})
       ;; Convert to BufferedImage - Can be very slow...
-      mx-img/to-image
+      (mx-img/to-image)
       ;; Convert to Mat
-      cvu/buffered-image-to-mat
+      (cvu/buffered-image-to-mat)
       ;; Show Mat
-      cvu/imshow)
+      (cvu/imshow))
 
   ;; Showing an image using `ndarray->mat`
   (-> "images/dog.jpg"
       ;; Read image from disk
       (mx-img/read-image {:to-rgb false})
       ;; Convert NDArray to Mat
-      ndarray->mat
+      (ndarray->mat)
       ;; Show Mat
-      cvu/imshow)
+      (cvu/imshow))
 
   ;; Showing an image using `mx-cv/ndarray-to-mat` from `origami`
+  ;; MXNet default channel ordering is: RGB
+  ;; OpenCV default channel ordering is: BGR
   (-> "images/dog.jpg"
       ;; Read image from disk
       (mx-img/read-image {:to-rgb false})
       ;; Convert NDArray to Mat
-      mx-cv/ndarray-to-mat
+      (mx-cv/ndarray-to-mat)
       ;; Show Mat
-      cvu/imshow)
+      (cvu/imshow))
 
-  ;; Drawing one bounding box on an image of dog
-  (let [img (cv/imread "images/dog.jpg")]
-    (draw-bounding-box! img {:top-left [200 440]
-                             :bottom-right [350 525]
-                             :label "cookie"})
-    (cvu/imshow img))
+  ;; Looking at the raw bytes: -128 to 127
+  (-> "images/dog.jpg"
+      ;; Read image from disk
+      (mx-img/read-image {:to-rgb false})
+      ;; Resizing image
+      (mx-img/resize-image 200 200)
+      ;; Convert NDArray to Mat
+      (mx-cv/ndarray-to-mat)
+      ;; Mat to bytes
+      (cv/<<)
+      (cv/->bytes)
+      (vec))
 
-  ;; Drawing multiple bounding boxes on an image of dog
-  (let [img (cv/imread "images/dog.jpg")
-        results [{:top-left [200 70] :bottom-right [830 430] :label "dog"}
-                 {:top-left [200 440] :bottom-right [350 525] :label "cookie"}]]
-    (draw-predictions! img results)
-    (cvu/imshow img))
-  )
+  ;; Display green channel of a picture
+  (-> "images/cat.jpg"
+      ;; Read image from disk
+      (mx-img/read-image {:to-rgb true})
+      ;; Convert NDArray to Mat
+      (mx-cv/ndarray-to-mat)
+      ;; Extract the red color channel
+      (mat->color-mat :green)
+      ;; Display the image
+      (cvu/imshow))
+
+  ;; Display all channels (blue, green and red) of a picture
+  (-> "images/cat.jpg"
+      ;; Read image from disk
+      (mx-img/read-image {:to-rgb true})
+      ;; Resize
+      (mx-img/resize-image 200 200)
+      ;; Convert NDArray to Mat
+      (mx-cv/ndarray-to-mat)
+      ;; Extract the different color channels
+      ((juxt #(mat->color-mat % :blue)
+             #(mat->color-mat % :green)
+             #(mat->color-mat % :red)))
+      ;; Display the images
+      (#(map cvu/imshow %)))
+
+;; Drawing one bounding box on an image of dog
+(let [img (cv/imread "images/dog.jpg")]
+  (draw-bounding-box! img {:top-left [200 440]
+                           :bottom-right [350 525]
+                           :label "cookie"})
+  (cvu/imshow img))
+
+;; Drawing multiple bounding boxes on an image of dog
+(let [img (cv/imread "images/dog.jpg")
+      results [{:top-left [200 70] :bottom-right [830 430] :label "dog"}
+               {:top-left [200 440] :bottom-right [350 525] :label "cookie"}]]
+  (draw-predictions! img results)
+  (cvu/imshow img))
 ```
 
 [1]: https://mxnet.incubator.apache.org/api/clojure/docs/org.apache.clojure-mxnet.ndarray.html
