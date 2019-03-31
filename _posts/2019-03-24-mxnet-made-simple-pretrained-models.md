@@ -1,5 +1,5 @@
 ---
-title:  "MXNet made simple: Pretrained Models for image classification - Inception, ResNet and VGG"
+title:  "MXNet made simple: Pretrained Models for image classification - Inception and VGG"
 layout: post
 date: 2019-03-24 00:00
 image: /assets/images/mxnet-logo.png
@@ -10,7 +10,6 @@ tag:
 - deeplearning
 - inception
 - vgg
-- resnet
 - image classification
 - model zoo
 star: true
@@ -19,7 +18,7 @@ author: arthurcaillau
 description: Pretrained models with Clojure and MXNet for image classification
 ---
 
-In this post, we will learn how to leverage pretrained models to perform image classification. The Computer Vision task is to associate a label with an unseen image. State of the art Machine Learning models have hundred of layers and require days and sometimes even weeks to train on GPUs. MXNet enables us to leverage such models very easily. We will see how to use three common Deep Learning models: **Inception, ResNet and VGG**.
+In this post, we will learn how to leverage pretrained models to perform image classification. The Computer Vision task is to associate a label with an unseen image. State of the art Machine Learning models have hundred of layers and require days and sometimes even weeks to train on GPUs. MXNet enables us to leverage such models very easily. We will see how to use three common Deep Learning models: **Inception and VGG**.
 
 ### Before we begin...
 
@@ -57,21 +56,7 @@ cd ..
 * `vgg16-symbol.json`: serialized computation graph that can be loaded by MXNet
 * `vgg16-0000.params`: binary file containing the `NDArrays` of the trained parameters
 
-Let's also download the **ResNet-152** and **Inception** pretrained models
-
-```bash
-#!/bin/bash
-
-set -evx
-
-mkdir -p model
-cd model
-
-wget http://data.mxnet.io/models/imagenet/resnet/152-layers/resnet-152-symbol.json
-wget http://data.mxnet.io/models/imagenet/resnet/152-layers/resnet-152-0000.params
-
-cd ..
-```
+Let's also download the **Inception** pretrained models
 
 ```bash
 #!/bin/bash
@@ -129,25 +114,21 @@ Below is a table that summarizes some key metrics for the three different models
   <tr>
     <th class="tg-0pky"></th>
     <th class="tg-0pky">VGG16</th>
-    <th class="tg-0pky">ResNet-152</th>
     <th class="tg-0pky">Inception v3</th>
   </tr>
   <tr>
     <td class="tg-1lax">RAM required</td>
     <td class="tg-0lax">528 MB</td>
-    <td class="tg-0lax">230 MB</td>
     <td class="tg-0lax">43 MB</td>
   </tr>
   <tr>
     <td class="tg-1lax">Number of Parameters</td>
     <td class="tg-0lax">140 million</td>
-    <td class="tg-0lax">60 million</td>
     <td class="tg-0lax">25 million</td>
   </tr>
   <tr>
     <td class="tg-1lax">Error Rate (ImageNet Challenge)</td>
     <td class="tg-0lax">7.4%</td>
-    <td class="tg-0lax">3.4%</td>
     <td class="tg-0lax">5.6%</td>
   </tr>
   <tr>
@@ -161,12 +142,6 @@ Below is a table that summarizes some key metrics for the three different models
     </td>
     <td class="tg-0lax">
 
-      <a href="/assets/images/viz/resnet152.png" >
-        <img class="small-image" src="/assets/images/viz/resnet152.png" alt="ResNet152 Topology" />
-      </a>
-    </td>
-    <td class="tg-0lax">
-
       <a href="/assets/images/viz/inception.png" >
         <img class="small-image" src="/assets/images/viz/inception.png" alt="Inception Topology" />
       </a>
@@ -174,15 +149,11 @@ Below is a table that summarizes some key metrics for the three different models
   </tr>
 </table>
 
-If you want to learn more about the **MXNet vizualization API**, it is covered in a former post [here][8].
+If you want to learn more about the **MXNet vizualization API**, it is covered in a previous post [here][8].
 
 ### VGG16
 
 Winner of the 2014 [ImageNet challenge][1] by achieving a **7.4%** error rate on image classification. It is a model built from 16 layers - [Research Paper][2]
-
-### ResNet-152
-
-Winner of the 2015 [ImageNet challenge][1] by achieving **3.4%** error rate on oject detection. It is better than typical human error rate, **5%** - [Research Paper][3]
 
 ### Inception v3
 
@@ -208,15 +179,6 @@ Time has come to load the models with the MXNet Module API.
 ;; Loading VGG16
 (defonce vgg-16-mod
   (-> {:prefix (str model-dir "vgg16") :epoch 0}
-      (m/load-checkpoint)
-      ;; Define the shape of input data and bind the name of the input layer
-      ;; to "data"
-      (m/bind {:for-training false
-               :data-shapes [{:name "data" :shape [1 c h w]}]})))
-
-;; Loading ResNet-152
-(defonce resnet-152-mod
-  (-> {:prefix (str model-dir "resnet-152") :epoch 0}
       (m/load-checkpoint)
       ;; Define the shape of input data and bind the name of the input layer
       ;; to "data"
@@ -341,15 +303,6 @@ We can now run the models on different images and look at the top 5 predictions 
 ;{:prob 0.0099070445, :label "n02127052 lynx, catamount"}
 ;{:prob 3.7205187E-4, :label "n04040759 radiator"})
 
-(->> "images/cat2.jpg"
-     (cv/imread)
-     (preprocess-img-mat)
-     (predict resnet-152-mod image-net-labels))
-;({:prob 0.09747321, :label "n02391049 zebra"}
-;{:prob 0.04086459, :label "n03532672 hook, claw"}
-;{:prob 0.04000138, :label "n01773157 black and gold garden spider, Argiope aurantia"}
-;{:prob 0.03932228, :label "n03187595 dial telephone, dial phone"}
-;{:prob 0.038932547, :label "n02124075 Egyptian cat"})
 ```
 
 ![Dog](/assets/images/dog-2.jpg){: .center-image }
@@ -377,16 +330,6 @@ We can now run the models on different images and look at the top 5 predictions 
 ;{:prob 0.0075261267, :label "n02108915 French bulldog"}
 ;{:prob 0.0014686864, :label "n02086079 Pekinese, Pekingese, Peke"}
 ;{:prob 0.0012910544, :label "n02108089 boxer"})
-
-(->> "images/dog2.jpg"
-     (cv/imread)
-     (preprocess-img-mat)
-     (predict resnet-152-mod image-net-labels))
-;({:prob 0.26530242, :label "n01819313 sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita"}
-;{:prob 0.10890331, :label "n03388043 fountain"}
-;{:prob 0.04696827, :label "n03590841 jack-o'-lantern"}
-;{:prob 0.039195884, :label "n03935335 piggy bank, penny bank"}
-;{:prob 0.03070829, :label "n02051845 pelican"})
 ```
 
 ![Guitar Player](/assets/images/guitarplayer.jpg){: .center-image }
@@ -414,16 +357,6 @@ We can now run the models on different images and look at the top 5 predictions 
 ;{:prob 0.059584185, :label "n04141076 sax, saxophone"}
 ;{:prob 0.029627431, :label "n02787622 banjo"}
 ;{:prob 0.016049441, :label "n02676566 acoustic guitar"})
-
-(->> "images/guitarplayer2.jpg"
-     (cv/imread)
-     (preprocess-img-mat)
-     (predict resnet-152-mod image-net-labels))
-;({:prob 0.7606491, :label "n04286575 spotlight, spot"}
-;{:prob 0.051547647, :label "n09229709 bubble"}
-;{:prob 0.020731576, :label "n02708093 analog clock"}
-;{:prob 0.017223129, :label "n03388043 fountain"}
-;{:prob 0.017017603, :label "n04153751 screw"})
 ```
 
 Overall the predictions look really good! Don't you think?
@@ -434,7 +367,6 @@ Below is a summary of the predictions to compare how the different models perfor
   <tr>
     <th class="tg-0pky"></th>
     <th class="tg-0pky">VGG16</th>
-    <th class="tg-0pky">ResNet-152</th>
     <th class="tg-0pky">Inception v3</th>
   </tr>
   <tr>
@@ -442,27 +374,22 @@ Below is a summary of the predictions to compare how the different models perfor
       <img alt="Dog" src="/assets/images/dog-2.jpg" />Dog
     </td>
     <td class="tg-2lax">1. pug, pug-dog</td>
-    <td class="tg-2lax">1. </td>
     <td class="tg-2lax">1. pug, pug-dog</td>
   </tr>
   <tr>
     <td class="tg-2lax">2. bull mastiff</td>
-    <td class="tg-2lax">2. </td>
     <td class="tg-2lax">2. bull mastiff</td>
   </tr>
   <tr>
     <td class="tg-2lax">3. French bulldog</td>
-    <td class="tg-2lax">3.</td>
     <td class="tg-2lax">3. French bulldog</td>
   </tr>
   <tr>
     <td class="tg-2lax">4. Pekinese, Pekingese, Peke</td>
-    <td class="tg-2lax">4. </td>
     <td class="tg-2lax">4. American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier</td>
   </tr>
   <tr>
     <td class="tg-2lax">5. boxer</td>
-    <td class="tg-2lax">5. </td>
     <td class="tg-2lax">5. tennis ball</td>
   </tr>
 
@@ -472,27 +399,22 @@ Below is a summary of the predictions to compare how the different models perfor
       <img alt="Cat" src="/assets/images/cat-egyptian.jpg" />Cat
     </td>
     <td class="tg-2lax">1. Egyptian cat</td>
-    <td class="tg-2lax">1. </td>
     <td class="tg-2lax">1. Egyptian cat</td>
   </tr>
   <tr>
     <td class="tg-2lax">2. tabby, tabby cat</td>
-    <td class="tg-2lax">2. </td>
     <td class="tg-2lax">2. tabby, tabby cat</td>
   </tr>
   <tr>
     <td class="tg-2lax">3. tiger cat</td>
-    <td class="tg-2lax">3. </td>
     <td class="tg-2lax">3. tiger cat</td>
   </tr>
   <tr>
     <td class="tg-2lax">4. lynx, catamount</td>
-    <td class="tg-2lax">4. </td>
     <td class="tg-2lax">4. lynx, catamount</td>
   </tr>
   <tr>
     <td class="tg-2lax">5. radiator</td>
-    <td class="tg-2lax">5. </td>
     <td class="tg-2lax">5. Siamese cat, Siamese</td>
   </tr>
 
@@ -501,27 +423,22 @@ Below is a summary of the predictions to compare how the different models perfor
       <img alt="Guitar Player" src="/assets/images/guitarplayer.jpg" />Guitar Player
     </td>
     <td class="tg-2lax">1. electric guitar</td>
-    <td class="tg-2lax">1. </td>
     <td class="tg-2lax">1. electric guitar</td>
   </tr>
   <tr>
     <td class="tg-2lax">2. stage</td>
-    <td class="tg-2lax">2. </td>
     <td class="tg-2lax">2. stage</td>
   </tr>
   <tr>
     <td class="tg-2lax">3. sax, saxophone</td>
-    <td class="tg-2lax">3. </td>
     <td class="tg-2lax">3. acoustic guitar</td>
   </tr>
   <tr>
     <td class="tg-2lax">4. banjo</td>
-    <td class="tg-2lax">4. </td>
     <td class="tg-2lax">4. banjo</td>
   </tr>
   <tr>
     <td class="tg-2lax">5. acoustic guitar</td>
-    <td class="tg-2lax">5. </td>
     <td class="tg-2lax">5. microphone, mike</td>
   </tr>
 
@@ -535,7 +452,6 @@ Now you can use pretrained, state of the art Deep Learning Models for image clas
 
 * [ImageNet Challenge][1]
 * [VGG16 Research Paper][2]
-* [ResNet-152 Research Paper][3]
 * [Inception v3 Research Paper][4]
 * [MXNet Model Zoo][5]
 * [An Introduction to the MXNet API - Part 4][6]
@@ -546,7 +462,7 @@ Here is also the code used in this post - also available in this [repository](ht
 
 ```clojure
 (ns mxnet-clj-tutorials.pretrained
-  "Tutorial on pretrained models with MXNet: Inception, ResNet and VGG."
+  "Tutorial on pretrained models with MXNet: Inception and VGG."
   (:require
     [clojure.string :as string]
 
@@ -567,14 +483,6 @@ Here is also the code used in this post - also available in this [repository](ht
 ;; Pretrained Inception BN model loaded from disk
 (defonce inception-mod
   (-> {:prefix (str model-dir "Inception-BN") :epoch 0}
-      (m/load-checkpoint)
-      ;; Define the shape of input data and bind the name of the input layer
-      ;; to "data"
-      (m/bind {:for-training false
-               :data-shapes [{:name "data" :shape [1 c h w]}]})))
-
-(defonce resnet-152-mod
-  (-> {:prefix (str model-dir "resnet-152") :epoch 0}
       (m/load-checkpoint)
       ;; Define the shape of input data and bind the name of the input layer
       ;; to "data"
@@ -659,16 +567,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.032480247, :label "n04536866 violin, fiddle"}
   ;{:prob 0.022555437, :label "n03110669 cornet, horn, trumpet, trump"})
 
-  (->> "images/guitarplayer.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.32477784, :label "n02708093 analog clock"}
-  ;{:prob 0.16388302, :label "n03388043 fountain"}
-  ;{:prob 0.16345626, :label "n04286575 spotlight, spot"}
-  ;{:prob 0.13510057, :label "n03028079 church, church building"}
-  ;{:prob 0.046880785, :label "n03000134 chainlink fence"})
-
   (->> "images/guitarplayer2.jpg"
        (cv/imread)
        (preprocess-img-mat)
@@ -688,16 +586,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.059584185, :label "n04141076 sax, saxophone"}
   ;{:prob 0.029627431, :label "n02787622 banjo"}
   ;{:prob 0.016049441, :label "n02676566 acoustic guitar"})
-
-  (->> "images/guitarplayer2.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.7606491, :label "n04286575 spotlight, spot"}
-  ;{:prob 0.051547647, :label "n09229709 bubble"}
-  ;{:prob 0.020731576, :label "n02708093 analog clock"}
-  ;{:prob 0.017223129, :label "n03388043 fountain"}
-  ;{:prob 0.017017603, :label "n04153751 screw"})
 
   (->> "images/cat.jpg"
        (cv/imread)
@@ -719,16 +607,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.049807232, :label "n02123159 tiger cat"}
   ;{:prob 0.034435965, :label "n02123045 tabby, tabby cat"})
 
-  (->> "images/cat.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.19741254, :label "n02441942 weasel"}
-  ;{:prob 0.1101544, :label "n04589890 window screen"}
-  ;{:prob 0.04704221, :label "n02443484 black-footed ferret, ferret, Mustela nigripes"}
-  ;{:prob 0.031224, :label "n02442845 mink"}
-  ;{:prob 0.030577147, :label "n01806567 quail"})
-
   (->> "images/cat2.jpg"
        (cv/imread)
        (preprocess-img-mat)
@@ -748,16 +626,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.024212556, :label "n02123159 tiger cat"}
   ;{:prob 0.0099070445, :label "n02127052 lynx, catamount"}
   ;{:prob 3.7205187E-4, :label "n04040759 radiator"})
-
-  (->> "images/cat2.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.09747321, :label "n02391049 zebra"}
-  ;{:prob 0.04086459, :label "n03532672 hook, claw"}
-  ;{:prob 0.04000138, :label "n01773157 black and gold garden spider, Argiope aurantia"}
-  ;{:prob 0.03932228, :label "n03187595 dial telephone, dial phone"}
-  ;{:prob 0.038932547, :label "n02124075 Egyptian cat"})
 
   (->> "images/dog.jpg"
        (cv/imread)
@@ -779,16 +647,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.0017559915, :label "n02108089 boxer"}
   ;{:prob 8.5579534E-4, :label "n02096585 Boston bull, Boston terrier"})
 
-  (->> "images/dog.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.5550145, :label "n04286575 spotlight, spot"}
-  ;{:prob 0.121797085, :label "n03637318 lampshade, lamp shade"}
-  ;{:prob 0.10030677, :label "n03388043 fountain"}
-  ;{:prob 0.06361176, :label "n02708093 analog clock"}
-  ;{:prob 0.030823186, :label "n03729826 matchstick"})
-
   (->> "images/dog2.jpg"
        (cv/imread)
        (preprocess-img-mat)
@@ -808,16 +666,6 @@ Here is also the code used in this post - also available in this [repository](ht
   ;{:prob 0.0075261267, :label "n02108915 French bulldog"}
   ;{:prob 0.0014686864, :label "n02086079 Pekinese, Pekingese, Peke"}
   ;{:prob 0.0012910544, :label "n02108089 boxer"})
-
-  (->> "images/dog2.jpg"
-       (cv/imread)
-       (preprocess-img-mat)
-       (predict resnet-152-mod image-net-labels))
-  ;({:prob 0.26530242, :label "n01819313 sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita"}
-  ;{:prob 0.10890331, :label "n03388043 fountain"}
-  ;{:prob 0.04696827, :label "n03590841 jack-o'-lantern"}
-  ;{:prob 0.039195884, :label "n03935335 piggy bank, penny bank"}
-  ;{:prob 0.03070829, :label "n02051845 pelican"})
   )
 ```
 
