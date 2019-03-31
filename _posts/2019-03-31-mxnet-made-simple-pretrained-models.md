@@ -1,7 +1,7 @@
 ---
 title:  "MXNet made simple: Pretrained Models for image classification - Inception and VGG"
 layout: post
-date: 2019-03-24 00:00
+date: 2019-03-31 00:00
 image: /assets/images/mxnet-logo.png
 headerImage: true
 tag:
