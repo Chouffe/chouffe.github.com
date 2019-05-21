@@ -69,10 +69,11 @@ From the EC2 instance, run the following command and select `java 8` that comes 
 ```
 sudo update-alternatives --config java
 ```
+It may not be necessary to run this if the default java version is already set to `java 8`.
 
 #### Update Cuda version
 
-From the EC2 instance, run the following commands to use the proper Cuda version required to run MXNet. For `MXNet 1.4.0`, one needs `cuda-9.2`
+From the EC2 instance, run the following commands to use the proper Cuda version required to run MXNet. For the current `MXNet 1.4.0-1.5.0`, one needs `cuda-9.2`
 
 ```
 sudo rm /usr/local/cuda
@@ -96,6 +97,25 @@ First, one needs to clone the MXNet codebase that comes with Clojure examples
 ```
 git clone https://github.com/apache/incubator-mxnet.git
 ```
+Open `project.clj` and uncomment the GPU package
+```clojure
+(defproject
+  ...
+  ;; Uncomment this line
+  [org.apache.mxnet/mxnet-full_2.11-linux-x86_64-gpu "1.5.0-SNAPSHOT"]
+  ;; Comment this line used for CI
+  ; [org.apache.mxnet/mxnet-full_2.11 "INTERNAL"]
+  ...
+)
+```
+Test that the clojure package can run on your EC2 instance
+```
+lein test
+```
+Install the `1.5.0-SNAPSHOT` jar locally
+```
+lein install
+```
 Navigate the filesystem to get to the Clojure examples
 ```
 cd incubator-mxnet/contrib/clojure-package/examples
@@ -104,30 +124,12 @@ We will run the code from the `module` example
 ```
 cd module
 ```
-Edit `project.clj` file to use the `gpu` library
-```clojure
-(defproject module-examples "0.1.0-SNAPSHOT"
-  :description "Clojure examples for module"
-  :plugins [[lein-cljfmt "0.5.7"]]
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 ;; This line below is important
-                 [org.apache.mxnet.contrib.clojure/clojure-mxnet-linux-gpu "1.4.0"]]
-  :pedantic? :skip
-  :repositories
-  [["staging" {:url "https://repository.apache.org/content/repositories/staging"
-               :snapshots true
-               :update :always}]
-   ["snapshots" {:url "https://repository.apache.org/content/repositories/snapshots"
-                 :snapshots true
-                 :update :always}]]
-  :main mnist-mlp)
-```
 One can monitor the GPU processes with the following command
 ```
-watch nvidia-sim
+watch nvidia-smi
 ```
 
-![nvidia-sim output](/assets/images/aws-dl-ami/aws-ec2-ami-nvidia-sim.png)
+![nvidia-smi output](/assets/images/aws-dl-ami/aws-ec2-ami-nvidia-sim.png)
 
 Now it is time to run some Clojure code and get these Neural Networks to learn something!
 
