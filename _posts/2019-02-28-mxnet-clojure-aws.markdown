@@ -97,7 +97,7 @@ First, one needs to clone the MXNet codebase that comes with Clojure examples
 ```
 git clone https://github.com/apache/incubator-mxnet.git
 ```
-Open `project.clj` and uncomment the GPU package
+Open `project.clj` to uncomment the GPU package and comment out the CI package
 ```clojure
 (defproject
   ...
@@ -108,7 +108,7 @@ Open `project.clj` and uncomment the GPU package
   ...
 )
 ```
-Test that the clojure package can run on your EC2 instance
+You should now be able to test that the clojure package can run on your EC2 instance
 ```
 lein test
 ```
