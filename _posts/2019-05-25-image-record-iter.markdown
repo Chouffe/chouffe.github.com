@@ -379,7 +379,7 @@ The `ImageRecordIter` API is powerful and lets you perform data augmentation ver
 The following common operations can be done:
 * **shuffling**: the dataset is shuffle randomly
 * **angle rotation**: rotate by a random degree `d` in `[-d, d]`
-* **random cropping**: randomly crop the
+* **random cropping**: randomly crop the image
 * **mirroring**: randomly mirror the image
 * **shearing**: randomly shear the image
 
