@@ -472,6 +472,34 @@ Now, to visualize 5 images of the `ImageRecordIter`, we just need to call the fu
 (visualize-image-rec-iter! train-iter 5)
 ```
 
+<table class="tg">
+  <tr>
+    <th class="tg-1pky">Image 1</th>
+    <th class="tg-1pky">Image 2</th>
+    <th class="tg-1pky">Image 3</th>
+    <th class="tg-1pky">Image 4</th>
+    <th class="tg-1pky">Image 5</th>
+  </tr>
+  <tr>
+    <td class="tg-1lax">
+      <img class="small-image" src="/assets/images/datasets/oxford-pet/image-rec-1.png" alt="Image 1" />
+    </td>
+    <td class="tg-1lax">
+      <img class="small-image" src="/assets/images/datasets/oxford-pet/image-rec-2.png" alt="Image 2" />
+    </td>
+    <td class="tg-1lax">
+      <img class="small-image" src="/assets/images/datasets/oxford-pet/image-rec-3.png" alt="Image 3" />
+    </td>
+    <td class="tg-1lax">
+      <img class="small-image" src="/assets/images/datasets/oxford-pet/image-rec-4.png" alt="Image 4" />
+    </td>
+    <td class="tg-1lax">
+      <img class="small-image" src="/assets/images/datasets/oxford-pet/image-rec-5.png" alt="Image 5" />
+    </td>
+  </tr>
+</table>
+<br>
+
 ## Conclusion
 
 Now you can create your own image records from your favorite datasets and feed them to an [MXNet module][5] to perform some computer vision tasks.
