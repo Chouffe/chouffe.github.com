@@ -24,7 +24,7 @@ We will use the [Oxford-IIIT Dataset][3] to demonstrate how to perform data prep
 
 From the Oxford-IIIT Dataset website:
 
-> A 37 category pet dataset with roughly 200 images for each class. The images have a large variations in scale, pose and lighting. Can also be used for localization.
+> A 37 category pet dataset with roughly 200 images for each class. The images have a large variation in scale, pose and lighting. Can also be used for localization.
 
 Below are some pet classes from this dataset
 
