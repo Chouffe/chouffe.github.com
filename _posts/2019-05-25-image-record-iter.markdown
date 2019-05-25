@@ -17,9 +17,10 @@ author: arthurcaillau
 description: Create image records with MXNet im2rec
 ---
 
-In this post, we will learn how the mechanisms for packaging any image dataset. We will also detail how to load it while applying data augmentation with MXNet. We will use the [Oxford-IIIT Dataset][3] to demonstrate how to perform data preparation and data loading.
-
+In this post, we will learn the mechanisms for packaging any image dataset. We will also detail how to load it while applying data augmentation with MXNet. Preparing the data for your neural network is often time consuming and error prone. This tutorial aims at providing some guideline for doing it with MXNet.
 ## Oxford-IIIT Dataset
+
+We will use the [Oxford-IIIT Dataset][3] to demonstrate how to perform data preparation and data loading.
 
 From the Oxford-IIIT Dataset website:
 
@@ -43,7 +44,7 @@ Below are some pet classes from this dataset
 * `Maine_Coon`
 * ...
 
-I am not a pet expert and it is always a good idea to look at the dataset to get a feel for the classification task ahead. Let's take a look at some dogs and cats!
+I am not a pet expert and it is always a good idea to look at the dataset to get a feel for the computer vision task ahead. Let's take a look at some dogs and cats!
 
 
 <style type="text/css">
@@ -378,8 +379,8 @@ The data is now loaded in RAM, ready to be used for training!
 
 The `ImageRecordIter` API is powerful and lets you perform data augmentation very easily.
 The following common operations can be done:
-* **shuffling**: the dataset is shuffle randomly
-* **angle rotation**: rotate by a random degree `d` in `[-d, d]`
+* **shuffling**: the dataset is shuffled randomly
+* **angle rotation**: rotate the image by a random degree `d` in `[-d, d]`
 * **random cropping**: randomly crop the image
 * **mirroring**: randomly mirror the image
 * **shearing**: randomly shear the image
