@@ -10,6 +10,7 @@ tag:
 - deeplearning
 - symbol
 - computation graph
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

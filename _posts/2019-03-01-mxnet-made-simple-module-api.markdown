@@ -9,6 +9,7 @@ tag:
 - mxnet
 - deeplearning
 - module
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

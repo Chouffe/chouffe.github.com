@@ -9,6 +9,7 @@ tag:
 - mxnet
 - deeplearning
 - symbol
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

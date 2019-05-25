@@ -12,6 +12,7 @@ tag:
 - notebook
 - aws
 - deeplearning
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

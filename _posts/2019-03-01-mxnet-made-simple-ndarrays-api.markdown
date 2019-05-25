@@ -9,6 +9,7 @@ tag:
 - mxnet
 - deeplearning
 - ndarray
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

@@ -11,6 +11,7 @@ tag:
 - ndarray
 - image
 - opencv
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

@@ -12,6 +12,7 @@ tag:
 - vgg
 - image classification
 - model zoo
+- tutorial
 star: true
 category: blog
 author: arthurcaillau

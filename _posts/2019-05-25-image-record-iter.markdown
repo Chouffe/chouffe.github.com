@@ -9,7 +9,8 @@ tag:
 - clojure
 - mxnet
 - deeplearning
-- im2recc
+- im2rec
+- tutorial
 star: true
 category: blog
 author: arthurcaillau
