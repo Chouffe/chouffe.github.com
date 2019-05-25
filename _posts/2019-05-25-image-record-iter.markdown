@@ -1,5 +1,5 @@
 ---
-title:  "MXNet made simple: Image RecordIO and Data Loading"
+title:  "MXNet made simple: Image RecordIO with im2rec and Data Loading"
 layout: post
 date: 2019-05-25 00:00
 image: /assets/images/mxnet-logo.png
@@ -9,7 +9,7 @@ tag:
 - clojure
 - mxnet
 - deeplearning
-- resnet
+- im2recc
 star: true
 category: blog
 author: arthurcaillau
