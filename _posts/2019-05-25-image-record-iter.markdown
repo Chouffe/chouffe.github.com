@@ -243,8 +243,15 @@ $ git clone https://github.com/apache/incubator-mxnet.git
 OpenCV is also required by im2rec. I usually create a python virtualenv in which I install all the dependencies.
 
 ```bash
-$ mkvirtualenv mxnet -p python3
+$ mkvirtualenv clojure-mxnet -p python3
+$ workon mxnet
 $ pip install opencv-python mxnet
+```
+
+One can also leverage `anaconda`
+
+```bash
+$ conda create -n clojure-mxnet mxnet opencv python=3
 ```
 
 `im2rec` is used to first create a `.lst` file that will then be used to package the data in a binary format.
