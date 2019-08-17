@@ -18,6 +18,7 @@ layout: page
 
 <h2>Experience</h2>
 <ul>
+  <li><strong>Pitch</strong>: The future of presentation software | Full Stack Senior Software Engineer</li>
   <li><strong>Airbnb</strong>: Belong Anywhere | Full Stack Software Engineer / Machine Learning Engineer</li>
   <li><strong>Trullo</strong>: Share, discuss and discover the things you love | Founding Member / Full Stack Software Engineer</li>
 	<li><strong>LumApps</strong>: The Intranet recommended for Google’s G Suite | Full Stack Software Engineering Intern</li>
