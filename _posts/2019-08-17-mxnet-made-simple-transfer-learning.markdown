@@ -17,29 +17,29 @@ author: arthurcaillau
 description: Leverage pretrained models to achieve state of the art on image classification tasks
 ---
 
-This post will explained how transfer learning can make us achieve state of the art performance on the [Oxford-IIIT Dataset][2]. This technique is very among practicioners as pretrained models can be leveraged to quickly learn slightly different tasks.
+This post will explain how transfer learning can make us achieve state of the art performance on the [Oxford-IIIT Dataset][2]. This technique is very common among practicioners as pretrained models can be leveraged to quickly learn new machine learning tasks.
 
 ## Transfer Learning
 
 ### What is Transfer Learning?
 
-> Transfer Learning is a machine learning technique where a model trained for task **X** is reused for task **Y**.
+> Transfer Learning is a Machine Learning technique where a model trained for task **X** is reused for task **Y**.
 
 ### Why do we need Transfer Learning?
 
-When task **X** and **Y** are similar in nature, it requires much less time and training data to learn **Y** when we a pretrained model is available for task **X**. The learning of task **X** is transfered to the learning of task **Y**.
+When task **X** and **Y** are similar in nature, it requires much less time and training data to learn **Y** when a pretrained model is available for task **X**. The learning of task **X** is transfered to the model that learns task **Y**.
 
 > Eg. A model trained on classifying 1000 object categories (task **X**) can be leveraged to classify 35 pet breeds (task **Y**).
 
 1. It is computationally and time expensive to retrain a model from scratch. It can take weeks on a GPU to train certain models to perform well
 2. It is data expensive to train a model to perform a machine task from scratch
-3. It requires knowledge of Deep Learning architectures that perform best on the task to learn
+3. It requires knowledge or exploration of Deep Learning architectures that perform well on the task to learn
 
 ### How does Transfer learning work in practice?
 
-Practicioners will pick a pretrained model that perform really well on task **X** and then fine tune the final layers of the network on the new task **Y**.
+Practicioners often pick a pretrained model that performs really well on task **X** and then fine tune the last layers of the network on the new task **Y**.
 
-This technique requires very little data and very little training time to achieve close to state of the art results on a task **Y**.
+This technique requires very little data and very little training time to achieve close to State Of The Art (SOTA) results on the task **Y**.
 
 ## Oxford-IIIT Dataset
 
@@ -79,7 +79,7 @@ From the Oxford-IIIT Dataset website:
 </table>
 
 This dataset has been explored more in depth in a [previous post][1] where the `im2rec` preprocessing tool is explained.
-To download and preprocess the dataset with `im2rec` the following script needs to be run.
+To download and preprocess the dataset with `im2rec` the following script should be run.
 ```bash
 #!/bin/bash
 
@@ -146,9 +146,10 @@ fi
 
 In the rest of the post, I will assume the rec files have been properly generated.
 
-## Before we run some REPL code
+## Before we begin...
 
 We will need to import certain packages.
+
 ```clojure
 (require '[clojure.string :as str]
 
@@ -183,7 +184,7 @@ First, let's define some parameters for loading the dataset and the pretrained m
 (def num-classes 37)
 ```
 
-Then we load the dataset as RecordIter.
+Then we load the dataset as a `RecordIter`.
 ```clojure
 (defonce train-iter
   (mx-io/image-record-iter
@@ -213,13 +214,13 @@ Then we load the dataset as RecordIter.
 
 ### Loading the pretrained model
 
-A base model is needed to demonstrate transfer learning. As we want to learn an image classification task, we can leverage a strong classification model that is known to perform well in practice.
+A base model has to be picked to demonstrate transfer learning. As we want to learn an image classification task, we can leverage a strong classification model that is known to perform well in practice.
 
-ResNets models are trained on the [ImageNet dataset][4] to discriminate between more than 20000 categories of objects. Ranging from cats to musical instruments. They are well suited for transfer learning on a new image classification task.
+`ResNet` models are trained on the [ImageNet dataset][4] to discriminate between more than 20000 categories of objects. Ranging from cats to musical instruments. They are well suited for transfer learning on a new image classification task.
 
-We can start with `ResNet 18` which is small enough to get a baseline quickly. Using a pretrained model for classification tasks is explained in a [previous blog post][3].
+We can start with a `ResNet18` which is small enough to get a baseline quickly - using a pretrained model for classification tasks is explained in a [previous blog post][3].
 
-Run the following bash script to fetch a pretrained `ResNet 18` model.
+Run the following bash script to fetch a pretrained `ResNet18` model.
 
 ```bash
 #!/bin/bash
@@ -237,7 +238,7 @@ if [ ! -f "$model_path/resnet-18-0000.params" ]; then
 fi
 ```
 
-Now we can define a function that will load in memory the network architecture and learned parameters for us.
+Now we can define a function that load in memory the network architecture and its learned parameters.
 
 ```clojure
 (defn get-model!
@@ -252,7 +253,9 @@ Now we can define a function that will load in memory the network architecture a
      :aux-params (m/aux-params mod)}))
 ```
 
-Next, we need to reuse the base model learned parameters. We get rid of the last fully connected layers of the ResNet model and connect a new one. The idea is that the base layer has learned how to classify different shapes and patterns when the new classification head will learn how to combine this knowledge to discriminate between 37 pet breeds.
+Next, we need to reuse the base model learned parameters. We remove the last fully connected layers of the `ResNet` model and plug a new one.
+
+The idea is that the base layer has learned how to classify different shapes and patterns when the new classification head will learn how to combine this knowledge to discriminate between 37 pet breeds.
 
 ```clojure
 (defn mk-fine-tune-model
@@ -278,6 +281,7 @@ Next, we need to reuse the base model learned parameters. We get rid of the last
 ### Training the model
 
 Time has come to train our model. We define a function `fine-tune!` that does just that.
+
 ```clojure
 (defn fit!
   "Trains the symbol `net` on `devs` with `train-iter` for training and
@@ -339,9 +343,9 @@ Now we can perform transfer learning on a CPU with the following code:
 
 > **Note**: It will be very slow and I recommend running this on a GPU to get a ~100x time speedup. I wrote a [tutorial][5] to explain how to get setup on a GPU with AWS.
 
-As you can see, with **only 30 minutes** of training and **1 epoch**, our model achieves about **87%** accuracy on the classification task. It is already an excellent performance and it was achieved with very little data and very little time. I would challenge you to beat it and learn how to classify these 37 pet breeds in less than 30 minutes using the [Oxford-IIIT dataset][2] :p
+As you can see, in **only 30 minutes** of training and **1 epoch**, our model achieves about **87%** accuracy on the classification task. It is already an excellent performance and it is achieved with very little data and very little time. I would challenge you to beat it and learn how to classify these 37 pet breeds in less than 30 minutes using the [Oxford-IIIT dataset][2] :p
 
-This performance is a good baseline. Let's see if we can improve on it by training with more epochs.
+This performance is a good baseline. Let's see if we can improve on it when training with more epochs.
 
 ```clojure
 ;; Training with a ResNet18 base model on a GPU for 6 epochs
@@ -359,7 +363,7 @@ This performance is a good baseline. Let's see if we can improve on it by traini
 ; INFO  org.apache.mxnet.module.BaseModule: Epoch[5] Validation-accuracy=0.91032606
 ```
 
-Training for 6 epochs on a GPU results in **91% accuracy** on the validation set. It did not take longer than **2 minutes** of training on a GPU.
+Training for 6 epochs on a GPU results in **91% accuracy** on the validation set. It did not take longer than **2 minutes** on a GPU.
 
 We can probably even get better performance by using a larger base model. Let's see how good it gets with a pretrained `ResNet50` this time.
 
@@ -397,11 +401,12 @@ fi
 ; INFO  org.apache.mxnet.module.BaseModule: Epoch[5] Validation-accuracy=0.9436141
 ```
 
-In less than **5 minutes** of training, our model achieves **94.4% accuracy** on the validation set. To give you an idea on how good that is: this level of performance was the State of the Art in 2018.
+In less than **5 minutes** of training, our model achieves **94.4% accuracy** on the validation set. To give you an idea of how good that is, this level of performance was the State of the Art in 2018.
 
 ## Conclusion
 
 Transfer Learning is a truly powerful Machine Learning technique. It can help us achieve State of the Art results on a new Machine Learning task.
+
 We achieved SOTA 2018 on the Oxford-IIIT classification task in less than 5 minutes of training.
 
 ## References and Resources
